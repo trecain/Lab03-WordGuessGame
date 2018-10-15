@@ -7,7 +7,7 @@ namespace Lab03_WordGuessGame
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine();
             OpenWordBank();
         }
 
@@ -36,6 +36,7 @@ namespace Lab03_WordGuessGame
             try
             {
                 Console.WriteLine("Hello contestant!, Welcome to Word Guess Game.");
+                Console.WriteLine();
                 Console.WriteLine("1: New Game");
                 Console.WriteLine("2: Add A Word");
                 Console.WriteLine("3: View Words");
@@ -43,7 +44,6 @@ namespace Lab03_WordGuessGame
                 Console.WriteLine("5: Exit Game");
                 int userMenuInput = Convert.ToInt32(Console.ReadLine());
                 return userMenuInput;
-
             }
             catch (FormatException)
             {
@@ -133,24 +133,38 @@ namespace Lab03_WordGuessGame
             Console.WriteLine("Success: File has been deleted");
             Console.WriteLine();
             UserInterfaceMenu();
+            HandlesTheUsersInput(path);
         }
 
         public static void ViewWords(string path)
         {
-            using (StreamReader sr = File.OpenText(path))
+            if (File.Exists(path))
             {
-                string[] fileText = File.ReadAllLines(path);
-
-                int wordLength = fileText.Length;
-                foreach(string line in fileText)
+                using (StreamReader sr = File.OpenText(path))
                 {
-                    Console.WriteLine(line);
+                    string[] fileText = File.ReadAllLines(path);
+
+                    int wordLength = fileText.Length;
+                    foreach(string line in fileText)
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Your word bank does not exist!");
+                Console.WriteLine("Would you like to create one? enter yes or no");
+                string userName = Console.ReadLine();
+                if (userName.ToLower() == "yes")
+                {
+                    AddToWordBank(path);
                 }
             }
             Console.WriteLine();
-            UserInterfaceMenu();
+            HandlesTheUsersInput(path);
         }
 
-        
+  
     }
 }
