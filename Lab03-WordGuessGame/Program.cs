@@ -88,16 +88,20 @@ namespace Lab03_WordGuessGame
             {
                 string[] lines = File.ReadAllLines(path);
                 Random random = new Random();
-                int line = random.Next(0, lines.Length);
+                int line = random.Next(1, lines.Length);
                 char[] underscores = new char[lines[line].Length];
+                
 
                 for (int i = 0; i < underscores.Length; i++)
                 {
                     underscores[i] = '_';
                 }
-
+                
                 Console.Write("Your word to guess is: ");
                 Console.WriteLine(string.Join(" ", underscores));
+                
+
+                
             }
         }
 
