@@ -1,1 +1,2 @@
 Hello guest, welcome to word guessing game.
+Hey my name is albert
