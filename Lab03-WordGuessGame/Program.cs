@@ -15,18 +15,15 @@ namespace Lab03_WordGuessGame
         {
             string path = @"C:\Users\ercai\Desktop\codefellows\401\Lab03-WordGuessGame\BankOfWords.txt";
 
-            if (!File.Exists(path))
+            if (File.Exists(path))
             {
-                using (FileStream fs = File.Create(path))
-                {
-                    Byte[] fileText = new System.Text.UTF8Encoding(true).GetBytes("possum");
-                    fs.Write(fileText, 0, fileText.Length);
-                }
+                File.Delete(path);
             }
-            else
+            using (StreamWriter sw = File.CreateText(path))
             {
-                string[] fileText = File.ReadAllLines(path);
-                int fileTextLength = fileText.Length;
+                sw.WriteLine("possum");
+                sw.WriteLine("turtle");
+                sw.WriteLine("pig");
             }
             HandlesTheUsersInput(path);
         }
@@ -87,32 +84,21 @@ namespace Lab03_WordGuessGame
 
         public static void InitializeGame(string path)
         {
-            string[] fileText = File.ReadAllLines(path);
-            var random = new Random();
-            var lineNum = random.Next(0, fileText.Length - 1);
-            string lines = fileText[lineNum];
-
-            int userGuesses = 0;
-
-            Console.WriteLine("Please guess a word.");
-            string userGuess = Console.ReadLine().ToLower();
-
-            userGuesses += userGuesses;
-
-            if (lines == userGuess)
+            if (File.Exists(path))
             {
-                Console.WriteLine("You're correct.");
+                string[] lines = File.ReadAllLines(path);
+                Random random = new Random();
+                int line = random.Next(0, lines.Length);
+                char[] underscores = new char[lines[line].Length];
+
+                for (int i = 0; i < underscores.Length; i++)
+                {
+                    underscores[i] = '_';
+                }
+
+                Console.Write("Your word to guess is: ");
+                Console.WriteLine(string.Join(" ", underscores));
             }
-            else if (lines.ToLower().Contains(userGuess))
-            {
-                Console.WriteLine("That letter is correct.");
-            }
-            else
-            {
-                Console.WriteLine($"That's incorrect, you're wrong.  The number you meant to guess was {lines}");
-            }
-            Console.WriteLine();
-            HandlesTheUsersInput(path);
         }
 
         public static void AddToWordBank(string path)
@@ -120,7 +106,7 @@ namespace Lab03_WordGuessGame
             using (StreamWriter sw = File.AppendText(path))
             {
                 Console.WriteLine("What word would you like to add?");
-                sw.Write(Environment.NewLine);
+
                 sw.WriteLine(Console.ReadLine());
             }
             Console.WriteLine();
@@ -142,12 +128,12 @@ namespace Lab03_WordGuessGame
             {
                 using (StreamReader sr = File.OpenText(path))
                 {
-                    string[] fileText = File.ReadAllLines(path);
-
-                    int wordLength = fileText.Length;
-                    foreach(string line in fileText)
+                    string s = "";
+                    int count = 0;
+                    while ((s = sr.ReadLine()) != null)
                     {
-                        Console.WriteLine(line);
+                        count++;
+                        Console.WriteLine($"{count}: {s}");
                     }
                 }
             }
