@@ -7,4 +7,4 @@ The solution was to implement I/O to allow a user to create, add, and delete wor
 Program should be able to catch and handle any user errors.
 
 ## Visual
-![]()
+![](https://github.com/trecain/Lab03-WordGuessGame/blob/master/assets/guessing.PNG)
