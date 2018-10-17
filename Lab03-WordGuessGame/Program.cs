@@ -76,7 +76,7 @@ namespace Lab03_WordGuessGame
             Console.WriteLine("2 - View Words");
             Console.WriteLine("3 - Delete Word");
             Console.WriteLine("4 - Delete Word Bank");
-            Console.WriteLine("5 - Backt To Main Menu");
+            Console.WriteLine("5 - Back To Main Menu");
             int userInput = Convert.ToInt32(Console.ReadLine());
             AdminMenuLogic(userInput, path);
         }
@@ -133,7 +133,13 @@ namespace Lab03_WordGuessGame
             }
         }
 
-        
+        public static void DeleteWordBank(string path)
+        {
+            File.Delete(path);
+            Console.WriteLine("Success: Word bank has been deleted");
+            Console.WriteLine("");
+            AdminMenuUI(path);
+        }
 
         //Runs the main menu logic by invoking methods off menu
         public static void MainMenuLogic(int input, string path)
@@ -172,7 +178,7 @@ namespace Lab03_WordGuessGame
                     Console.WriteLine("admin three");
                     break;
                 case 4:
-                    Console.WriteLine("admin four");
+                    DeleteWordBank(path);
                     break;
                 case 5:
                     MainMenuUI(path);

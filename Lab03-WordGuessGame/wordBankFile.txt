@@ -1,6 +1,1 @@
-possum
-halloween
-vampire
-ghost
-witch
 fox
