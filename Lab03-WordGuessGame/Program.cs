@@ -7,154 +7,181 @@ namespace Lab03_WordGuessGame
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine();
-            OpenWordBank();
+            string wordBankFilePath = "../../../wordBankFile.txt";
+            Console.WriteLine("Welcome to my word Guess Game!");
+            OpenWordBank(wordBankFilePath);
+            Console.WriteLine("");
+            MainMenuUI(wordBankFilePath);
         }
 
-        static void OpenWordBank()
-        {
-            string path = @"C:\Users\ercai\Desktop\codefellows\401\Lab03-WordGuessGame\BankOfWords.txt";
-
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            using (StreamWriter sw = File.CreateText(path))
-            {
-                sw.WriteLine("possum");
-                sw.WriteLine("turtle");
-                sw.WriteLine("pig");
-            }
-            HandlesTheUsersInput(path);
-        }
-
-        static public int UserInterfaceMenu()
+        //Open word bank to hold words for game.
+        public static void OpenWordBank(string path)
         {
             try
             {
-                Console.WriteLine("Hello contestant!, Welcome to Word Guess Game.");
-                Console.WriteLine();
-                Console.WriteLine("1: New Game");
-                Console.WriteLine("2: Add A Word");
-                Console.WriteLine("3: View Words");
-                Console.WriteLine("4: Delete Words");
-                Console.WriteLine("5: Exit Game");
-                int userMenuInput = Convert.ToInt32(Console.ReadLine());
-                return userMenuInput;
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Error: That was not a number.");
-            }
-            finally
-            {
-                Console.WriteLine("Good Luck Contestant!");
-            }
-            return 0;
-        }
-
-        static public void HandlesTheUsersInput(string path)
-        {
-            int userInput = UserInterfaceMenu();
-
-            switch (userInput)
-            {
-                case 1:
-                    InitializeGame(path);
-                    break;
-                case 2:
-                    AddToWordBank(path);
-                    break;
-                case 3:
-                    ViewWords(path);
-                    break;
-                case 4:
-                    DeleteWord(path);
-                    break;
-                case 5:
-                    Console.WriteLine("Thank you for playing, have a good one.");
-                    break;
-                default:
-                    Console.WriteLine("Error: option selected not on the menu.");
-                    HandlesTheUsersInput(path);
-                    break;
-            }
-        }
-
-
-        public static void InitializeGame(string path)
-        {
-            if (File.Exists(path))
-            {
-                string[] lines = File.ReadAllLines(path);
-                Random random = new Random();
-                int line = random.Next(1, lines.Length);
-                char[] underscores = new char[lines[line].Length];
-                
-
-                for (int i = 0; i < underscores.Length; i++)
+                if (!File.Exists(path))
                 {
-                    underscores[i] = '_';
+                    using (StreamWriter sw = File.CreateText(path))
+                    {
+                        try
+                        {
+                            sw.WriteLine("possum");
+                            sw.WriteLine("halloween");
+                            sw.WriteLine("vampire");
+                            sw.WriteLine("ghost");
+                            sw.WriteLine("witch");
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                        finally
+                        {
+                            sw.Close();
+                        }
+                    }
                 }
-                
-                Console.Write("Your word to guess is: ");
-                Console.WriteLine(string.Join(" ", underscores));
-                
-
-                
+                else
+                {
+                    File.Delete(path);
+                    OpenWordBank(path);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
-        public static void AddToWordBank(string path)
+        //Outputs the main menu items.
+        public static void MainMenuUI(string path)
+        {
+            Console.WriteLine("1 - New Game");
+            Console.WriteLine("2 - Admin");
+            Console.WriteLine("3 - Exit");
+            Console.WriteLine("");
+            Console.WriteLine("Please choose a menu item.");
+            int userInput = Convert.ToInt32(Console.ReadLine());
+            MainMenuLogic(userInput, path);
+
+        }
+
+        //Outputs the admin menu items
+        public static void AdminMenuUI(string path)
+        {
+            Console.WriteLine("");
+            Console.WriteLine("Welcome to the Admin Menu");
+            Console.WriteLine("");
+            Console.WriteLine("1 - Add Word");
+            Console.WriteLine("2 - View Words");
+            Console.WriteLine("3 - Delete Word");
+            Console.WriteLine("4 - Delete Word Bank");
+            Console.WriteLine("5 - Backt To Main Menu");
+            int userInput = Convert.ToInt32(Console.ReadLine());
+            AdminMenuLogic(userInput, path);
+        }
+
+        public static void AddWordToBank(string path)
         {
             using (StreamWriter sw = File.AppendText(path))
             {
-                Console.WriteLine("What word would you like to add?");
-
-                sw.WriteLine(Console.ReadLine());
+                Console.WriteLine("What word would you like to add to the word bank?");
+                string wordToAdd = Console.ReadLine();
+                sw.WriteLine(wordToAdd);
+                Console.WriteLine($"Success: {wordToAdd} was added to the word bank.");
             }
-            Console.WriteLine();
-            HandlesTheUsersInput(path);
+            Console.WriteLine("");
+            AdminMenuUI(path);
         }
 
-        public static void DeleteWord(string path)
+        public static void ViewWordBankWords(string path)
         {
-            File.Delete(path);
-            Console.WriteLine("Success: File has been deleted");
-            Console.WriteLine();
-            UserInterfaceMenu();
-            HandlesTheUsersInput(path);
-        }
-
-        public static void ViewWords(string path)
-        {
-            if (File.Exists(path))
+            try
             {
-                using (StreamReader sr = File.OpenText(path))
+                if (File.Exists(path))
                 {
-                    string s = "";
+                    string[] fileText = File.ReadAllLines(path);
                     int count = 0;
-                    while ((s = sr.ReadLine()) != null)
+                    foreach(string text in fileText)
                     {
                         count++;
-                        Console.WriteLine($"{count}: {s}");
+                        Console.WriteLine($"{count}: {text}");
+                    }
+
+                    Console.WriteLine("");
+                    Console.WriteLine("Would you like to return to the main menu again? enter yes or no");
+                    string userInput = Console.ReadLine();
+                    if (userInput.ToLower() == "yes" || userInput.ToLower() == "y")
+                    {
+                        MainMenuUI(path);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Your word bank does not exist!");
+                    Console.WriteLine("Would you like to create one? enter yes or no");
+                    string userResponse = Console.ReadLine();
+                    if (userResponse.ToLower() == "yes" || userResponse.ToLower() == "y")
+                    {
+                        AddWordToBank(path);
                     }
                 }
             }
-            else
+            catch (Exception)
             {
-                Console.WriteLine("Your word bank does not exist!");
-                Console.WriteLine("Would you like to create one? enter yes or no");
-                string userName = Console.ReadLine();
-                if (userName.ToLower() == "yes")
-                {
-                    AddToWordBank(path);
-                }
+                throw;
             }
-            Console.WriteLine();
-            HandlesTheUsersInput(path);
         }
 
-  
+        
+
+        //Runs the main menu logic by invoking methods off menu
+        public static void MainMenuLogic(int input, string path)
+        {
+            switch (input)
+            {
+                case 1:
+                    Console.WriteLine("one");
+                    break;
+                case 2:
+                    AdminMenuUI(path);
+                    break;
+                case 3:
+                    Console.WriteLine("Thank you for playing! have a good one.");
+                    break;
+                default:
+                    Console.WriteLine("");
+                    Console.WriteLine("Error: Please enter a valid menu option.");
+                    Console.WriteLine("");
+                    MainMenuUI(path);
+                    break;
+            }
+        }
+
+        public static void AdminMenuLogic(int input, string path)
+        {
+            switch (input)
+            {
+                case 1:
+                    AddWordToBank(path);
+                    break;
+                case 2:
+                    ViewWordBankWords(path);
+                    break;
+                case 3:
+                    Console.WriteLine("admin three");
+                    break;
+                case 4:
+                    Console.WriteLine("admin four");
+                    break;
+                case 5:
+                    MainMenuUI(path);
+                    break;
+                default:
+                    Console.WriteLine("Error: Please enter a valid admin menu option");
+                    break;
+            }
+        }
+        
     }
 }
