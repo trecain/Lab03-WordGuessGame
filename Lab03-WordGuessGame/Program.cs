@@ -7,11 +7,18 @@ namespace Lab03_WordGuessGame
     {
         public static void Main(string[] args)
         {
-            string wordBankFilePath = "../../../wordBankFile.txt";
-            Console.WriteLine("Welcome to my word Guess Game!");
-            OpenWordBank(wordBankFilePath);
-            Console.WriteLine("");
-            MainMenuUI(wordBankFilePath);
+            try
+            {
+                string wordBankFilePath = "../../../wordBankFile.txt";
+                Console.WriteLine("Welcome to my word Guess Game!");
+                OpenWordBank(wordBankFilePath);
+                Console.WriteLine("");
+                MainMenuUI(wordBankFilePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message}");
+            }
         }
 
         //Open word bank to hold words for game.
@@ -83,16 +90,37 @@ namespace Lab03_WordGuessGame
 
         public static void AddWordToBank(string path)
         {
-            using (StreamWriter sw = File.AppendText(path))
+            try
             {
-                Console.WriteLine("What word would you like to add to the word bank?");
-                string wordToAdd = Console.ReadLine();
-                sw.WriteLine(wordToAdd);
-                Console.WriteLine($"Success: {wordToAdd} was added to the word bank.");
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    Console.WriteLine("What word would you like to add to the word bank?");
+                    string wordToAdd = Console.ReadLine();
+                    sw.WriteLine(wordToAdd);
+                    Console.WriteLine($"Success: {wordToAdd} was added to the word bank.");
+                }
+                Console.WriteLine("");
+                AdminMenuUI(path);
             }
-            Console.WriteLine("");
-            AdminMenuUI(path);
+            catch(Exception)
+            {
+                throw;
+            }
         }
+
+
+        public delegate void MenuFunctions(string path);
+        public static void RenderMenus(string path, string message, MenuFunctions cb)
+        {
+            Console.WriteLine("");
+            Console.WriteLine(message);
+            string userInput = Console.ReadLine();
+            if (userInput.ToLower() == "yes" || userInput.ToLower() == "y")
+            {
+                cb(path);
+            }
+        }
+
 
         public static void ViewWordBankWords(string path)
         {
@@ -107,24 +135,11 @@ namespace Lab03_WordGuessGame
                         count++;
                         Console.WriteLine($"{count}: {text}");
                     }
-
-                    Console.WriteLine("");
-                    Console.WriteLine("Would you like to return to the main menu again? enter yes or no");
-                    string userInput = Console.ReadLine();
-                    if (userInput.ToLower() == "yes" || userInput.ToLower() == "y")
-                    {
-                        MainMenuUI(path);
-                    }
+                    RenderMenus(path, "Would you like to return to the admin menu again? enter yes or no", AdminMenuUI);
                 }
                 else
                 {
-                    Console.WriteLine("Your word bank does not exist!");
-                    Console.WriteLine("Would you like to create one? enter yes or no");
-                    string userResponse = Console.ReadLine();
-                    if (userResponse.ToLower() == "yes" || userResponse.ToLower() == "y")
-                    {
-                        AddWordToBank(path);
-                    }
+                    RenderMenus(path, "Your word bank does not exist! Would you like to create one? enter yes or no", AddWordToBank);
                 }
             }
             catch (Exception)
@@ -132,6 +147,7 @@ namespace Lab03_WordGuessGame
                 throw;
             }
         }
+
 
         public static void DeleteWordBank(string path)
         {
@@ -141,51 +157,103 @@ namespace Lab03_WordGuessGame
             AdminMenuUI(path);
         }
 
+        public static string[] ReadFile(string path)
+        {
+            try
+            {
+                string[] myWords = File.ReadAllLines(path);
+                return myWords;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static void DeleteWordFromWordBank(string path)
+        {
+           try
+            {
+                Console.WriteLine("Word to delete from word bank.");
+                string wordToRemove = Console.ReadLine();
+                string[] currentWords = ReadFile(path);
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    foreach (string line in currentWords)
+                    {
+                        if (line != wordToRemove)
+                        {
+                            sw.WriteLine(line);
+                        }
+                    }
+                }
+                AdminMenuUI(path);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         //Runs the main menu logic by invoking methods off menu
         public static void MainMenuLogic(int input, string path)
         {
-            switch (input)
+            try
             {
-                case 1:
-                    Console.WriteLine("one");
-                    break;
-                case 2:
-                    AdminMenuUI(path);
-                    break;
-                case 3:
-                    Console.WriteLine("Thank you for playing! have a good one.");
-                    break;
-                default:
-                    Console.WriteLine("");
-                    Console.WriteLine("Error: Please enter a valid menu option.");
-                    Console.WriteLine("");
-                    MainMenuUI(path);
-                    break;
+                switch (input)
+                {
+                    case 1:
+                        Console.WriteLine("one");
+                        break;
+                    case 2:
+                        AdminMenuUI(path);
+                        break;
+                    case 3:
+                        Console.WriteLine("Thank you for playing! have a good one.");
+                        break;
+                    default:
+                        Console.WriteLine("");
+                        Console.WriteLine("Error: Please enter a valid menu option.");
+                        Console.WriteLine("");
+                        MainMenuUI(path);
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public static void AdminMenuLogic(int input, string path)
         {
-            switch (input)
+            try
             {
-                case 1:
-                    AddWordToBank(path);
-                    break;
-                case 2:
-                    ViewWordBankWords(path);
-                    break;
-                case 3:
-                    Console.WriteLine("admin three");
-                    break;
-                case 4:
-                    DeleteWordBank(path);
-                    break;
-                case 5:
-                    MainMenuUI(path);
-                    break;
-                default:
-                    Console.WriteLine("Error: Please enter a valid admin menu option");
-                    break;
+                switch (input)
+                {
+                    case 1:
+                        AddWordToBank(path);
+                        break;
+                    case 2:
+                        ViewWordBankWords(path);
+                        break;
+                    case 3:
+                        DeleteWordFromWordBank(path);
+                        break;
+                    case 4:
+                        DeleteWordBank(path);
+                        break;
+                    case 5:
+                        MainMenuUI(path);
+                        break;
+                    default:
+                        Console.WriteLine("Error: Please enter a valid admin menu option");
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
         
