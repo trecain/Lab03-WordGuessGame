@@ -122,6 +122,20 @@ namespace Lab03_WordGuessGame
         }
 
 
+        public static void NewGame(string path)
+        {
+            string[] wordArr = ReadFile(path);
+            Random random = new Random();
+            int randomInteger = random.Next(0, wordArr.Length);
+            string[] underscores = new string[wordArr.Length];
+            for(int i = 0; i < wordArr.Length; i++)
+            {
+                underscores[i] = "_ ";
+            }
+            Console.WriteLine(String.Join("", underscores));
+        }
+
+
         public static void ViewWordBankWords(string path)
         {
             try
@@ -203,7 +217,7 @@ namespace Lab03_WordGuessGame
                 switch (input)
                 {
                     case 1:
-                        Console.WriteLine("one");
+                        NewGame(path);
                         break;
                     case 2:
                         AdminMenuUI(path);
