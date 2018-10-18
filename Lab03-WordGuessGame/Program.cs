@@ -121,18 +121,57 @@ namespace Lab03_WordGuessGame
             }
         }
 
-
-        public static void NewGame(string path)
+        public static string CreatesGameUI(string word)
         {
-            string[] wordArr = ReadFile(path);
-            Random random = new Random();
-            int randomInteger = random.Next(0, wordArr.Length);
-            string[] underscores = new string[wordArr.Length];
-            for(int i = 0; i < wordArr.Length; i++)
+            string displayProgress = "";
+            foreach (char c in word)
             {
-                underscores[i] = "_ ";
+                char appendCharProgress = '_';
+                displayProgress += $"{appendCharProgress} ";
             }
-            Console.WriteLine(String.Join("", underscores));
+            return displayProgress;
+        }
+
+        public static string CheckIfCharInTheWord(char userGuess, string progress, string actualWord)
+        {
+            char[] wordInChars = actualWord.ToCharArray();
+            char[] progressInChars = progress.ToCharArray();
+            char[] emptyChar = new char[progress.Length];
+            for (int i = 0; i < wordInChars.Length; i++)
+            {
+                if (userGuess == wordInChars[i])
+                {
+                    emptyChar[i] = wordInChars[i];
+                }
+                emptyChar[i] = '_';
+            }
+            return String.Join(" ", emptyChar);
+        }
+
+        public static bool CheckStringForUnderscores(string word)
+        {
+            return word.Contains("_");
+        }
+
+        public static string NewGame(string path)
+        {
+            string[] allWordsInFile = File.ReadAllLines(path);
+            Random random = new Random();
+            string randomlyChosenWord = allWordsInFile[random.Next(0, allWordsInFile.Length)];
+            string wordInUnderscores = CreatesGameUI(randomlyChosenWord);
+            bool stopOrLoop = true;
+            string updatedWord;
+            while (stopOrLoop)
+            {
+                Console.WriteLine("Choose a letter");
+                Console.WriteLine(wordInUnderscores);
+                ConsoleKeyInfo userGuess = Console.ReadKey();
+                updatedWord = CheckIfCharInTheWord(userGuess.KeyChar, wordInUnderscores, randomlyChosenWord);
+                wordInUnderscores = updatedWord;
+                CheckStringForUnderscores(wordInUnderscores);
+            }
+            MainMenuUI(path);
+            return $"Congratulations, you guessed {randomlyChosenWord} correct!";
         }
 
 
@@ -217,7 +256,7 @@ namespace Lab03_WordGuessGame
                 switch (input)
                 {
                     case 1:
-                        NewGame(path);
+                        Console.WriteLine(NewGame(path));
                         break;
                     case 2:
                         AdminMenuUI(path);
