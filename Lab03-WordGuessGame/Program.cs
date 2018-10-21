@@ -9,6 +9,8 @@ namespace Lab03_WordGuessGame
         {
             try
             {
+                //Grabs the location of the word bank file
+                //Invokes all the files for the game
                 string wordBankFilePath = "../../../wordBankFile.txt";
                 Console.WriteLine("Welcome to my word Guess Game!");
                 OpenWordBank(wordBankFilePath);
@@ -102,6 +104,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        // uses stream writer to append new text to file path
         public static void AddWordToBank(string path)
         {
             try
@@ -123,7 +126,11 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //delegate to use a function as a method
         public delegate void MenuFunctions(string path);
+
+
+        //renders the menus with different messages.
         public static void RenderMenus(string path, string message, MenuFunctions cb)
         {
             try
@@ -151,6 +158,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //uses the type random to randomly grab the game word from file path
         public static string GrabRandomWordFromFile(string path)
         {
             try
@@ -167,6 +175,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //Fills in the underscores for the game ui on the console
         public static string CreatesGameUI(string word)
         {
             try
@@ -186,6 +195,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //takes in userguess, actual word, and the game progress to check if the guess is in the word.
         public static string CheckIfCharInTheWord(char userGuess, string progress, string actualWord)
         {
             try
@@ -209,6 +219,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //Checks to see if the string contains any underscores and returns true or false to stop the loop
         public static bool CheckStringForUnderscores(string word)
         {
             try
@@ -222,6 +233,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //Starts a new game, runs the functionality for populating the array and replacing underscores with the chars
         public static void NewGame(string path)
         {
             try
@@ -258,6 +270,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //Reads all the words from the file and displays them to the console
         public static void ViewWordBankWords(string path)
         {
             try
@@ -285,6 +298,7 @@ namespace Lab03_WordGuessGame
         }
 
 
+        //Deletes word bank file 
         public static void DeleteWordBank(string path)
         {
             try
@@ -300,6 +314,8 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
+        //helper function used to read all the lines in a file.
         public static string[] ReadFile(string path)
         {
             try
@@ -313,6 +329,8 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
+        //Deletes word from a file then recreates it.
         public static void DeleteWordFromWordBank(string path)
         {
            try
@@ -337,6 +355,7 @@ namespace Lab03_WordGuessGame
                 throw;
             }
         }
+
 
         //Runs the main menu logic by invoking methods off menu
         public static void MainMenuLogic(int input, string path)
@@ -368,6 +387,8 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
+        //Switch to run all the functions from the admin menu
         public static void AdminMenuLogic(int input, string path)
         {
             try
