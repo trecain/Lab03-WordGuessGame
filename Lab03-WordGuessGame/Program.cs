@@ -63,29 +63,42 @@ namespace Lab03_WordGuessGame
         //Outputs the main menu items.
         public static void MainMenuUI(string path)
         {
-            Console.WriteLine("1 - New Game");
-            Console.WriteLine("2 - Admin");
-            Console.WriteLine("3 - Exit");
-            Console.WriteLine("");
-            Console.WriteLine("Please choose a menu item.");
-            int userInput = Convert.ToInt32(Console.ReadLine());
-            MainMenuLogic(userInput, path);
-
+            try
+            {
+                Console.WriteLine("1 - New Game");
+                Console.WriteLine("2 - Admin");
+                Console.WriteLine("3 - Exit");
+                Console.WriteLine("");
+                Console.WriteLine("Please choose a menu item.");
+                int userInput = Convert.ToInt32(Console.ReadLine());
+                MainMenuLogic(userInput, path);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         //Outputs the admin menu items
         public static void AdminMenuUI(string path)
         {
-            Console.WriteLine("");
-            Console.WriteLine("Welcome to the Admin Menu");
-            Console.WriteLine("");
-            Console.WriteLine("1 - Add Word");
-            Console.WriteLine("2 - View Words");
-            Console.WriteLine("3 - Delete Word");
-            Console.WriteLine("4 - Delete Word Bank");
-            Console.WriteLine("5 - Back To Main Menu");
-            int userInput = Convert.ToInt32(Console.ReadLine());
-            AdminMenuLogic(userInput, path);
+            try
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Welcome to the Admin Menu");
+                Console.WriteLine("");
+                Console.WriteLine("1 - Add Word");
+                Console.WriteLine("2 - View Words");
+                Console.WriteLine("3 - Delete Word");
+                Console.WriteLine("4 - Delete Word Bank");
+                Console.WriteLine("5 - Back To Main Menu");
+                int userInput = Convert.ToInt32(Console.ReadLine());
+                AdminMenuLogic(userInput, path);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
@@ -113,12 +126,27 @@ namespace Lab03_WordGuessGame
         public delegate void MenuFunctions(string path);
         public static void RenderMenus(string path, string message, MenuFunctions cb)
         {
-            Console.WriteLine("");
-            Console.WriteLine(message);
-            string userInput = Console.ReadLine();
-            if (userInput.ToLower() == "yes" || userInput.ToLower() == "y")
+            try
             {
-                cb(path);
+                Console.WriteLine("");
+                Console.WriteLine(message);
+                string userInput = Console.ReadLine();
+                if (userInput.ToLower() == "yes" || userInput.ToLower() == "y")
+                {
+                    cb(path);
+                }
+                else if (userInput.ToLower() == "no" || userInput.ToLower() == "n")
+                {
+                    Console.WriteLine("Good bye!!");
+                } else
+                {
+                    RenderMenus(path, message, cb);
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -141,57 +169,92 @@ namespace Lab03_WordGuessGame
 
         public static string CreatesGameUI(string word)
         {
-            char[] arrayOfChars = word.ToCharArray();
-            string[] arrayOfStrings = new string[arrayOfChars.Length];
-            for (int i = 0; i < arrayOfChars.Length; i++)
+            try
             {
-                arrayOfStrings[i] = "_";
+                char[] arrayOfChars = word.ToCharArray();
+                string[] arrayOfStrings = new string[arrayOfChars.Length];
+                for (int i = 0; i < arrayOfChars.Length; i++)
+                {
+                    arrayOfStrings[i] = "_";
+                }
+                return string.Join("", arrayOfStrings);
             }
-            return string.Join("", arrayOfStrings);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
         public static string CheckIfCharInTheWord(char userGuess, string progress, string actualWord)
         {
-            char[] wordInChars = actualWord.ToCharArray();
-            char[] progressInChars = progress.ToCharArray();
-        
-            for (int i = 0; i < wordInChars.Length; i++)
+            try
             {
-                if (userGuess == wordInChars[i])
+                char[] wordInChars = actualWord.ToCharArray();
+                char[] progressInChars = progress.ToCharArray();
+        
+                for (int i = 0; i < wordInChars.Length; i++)
                 {
-                    progressInChars[i] = userGuess;
+                    if (userGuess == wordInChars[i])
+                    {
+                        progressInChars[i] = userGuess;
+                    }
                 }
+                return string.Join("", progressInChars);
             }
-            return string.Join("", progressInChars);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
         public static bool CheckStringForUnderscores(string word)
         {
-            return word.Contains("_");
+            try
+            {
+                return word.Contains("_");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
         public static void NewGame(string path)
         {
-            string randomWord = GrabRandomWordFromFile(path);
-            string checkIfChar = CreatesGameUI(randomWord);
-            bool stopLoop = true;
-            while (stopLoop)
+            try
             {
-                string updatedGameWord;
+                string randomWord = GrabRandomWordFromFile(path);
+                string checkIfChar = CreatesGameUI(randomWord);
+                bool stopLoop = true;
+                while (stopLoop)
+                {
+                    string updatedGameWord;
+                    Console.WriteLine(Environment.NewLine);
+                    Console.Write("Could you please select a letter? ");
+                    Console.WriteLine(checkIfChar);
+                    char guess = Console.ReadKey().KeyChar;
+                    if (guess != ' ')
+                    {
+                        updatedGameWord = CheckIfCharInTheWord(guess, checkIfChar, randomWord);
+                        checkIfChar = updatedGameWord;
+                        stopLoop = CheckStringForUnderscores(checkIfChar);
+                    }
+                    else
+                    {
+                        NewGame(path);
+                    }
+                }
                 Console.WriteLine(Environment.NewLine);
-                Console.Write("Could you please select a letter? ");
-                Console.WriteLine(checkIfChar);
-                char guess = Console.ReadKey().KeyChar;
-                updatedGameWord = CheckIfCharInTheWord(guess, checkIfChar, randomWord);
-                checkIfChar = updatedGameWord;
-                stopLoop = CheckStringForUnderscores(checkIfChar);
+                Console.WriteLine($"Success: you guessed {randomWord} correctly.");
+                MainMenuUI(path);
             }
-            Console.WriteLine(Environment.NewLine);
-            Console.WriteLine($"Success: you guessed {randomWord} correctly.");
-            MainMenuUI(path);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
@@ -224,10 +287,17 @@ namespace Lab03_WordGuessGame
 
         public static void DeleteWordBank(string path)
         {
-            File.Delete(path);
-            Console.WriteLine("Success: Word bank has been deleted");
-            Console.WriteLine("");
-            AdminMenuUI(path);
+            try
+            {
+                File.Delete(path);
+                Console.WriteLine("Success: Word bank has been deleted");
+                Console.WriteLine("");
+                AdminMenuUI(path);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public static string[] ReadFile(string path)
