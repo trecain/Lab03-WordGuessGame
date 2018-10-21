@@ -3,4 +3,3 @@ halloween
 vampire
 ghost
 witch
-possum

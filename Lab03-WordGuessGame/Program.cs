@@ -241,6 +241,7 @@ namespace Lab03_WordGuessGame
                 string randomWord = GrabRandomWordFromFile(path);
                 string checkIfChar = CreatesGameUI(randomWord);
                 bool stopLoop = true;
+                string guesses = "";
                 while (stopLoop)
                 {
                     string updatedGameWord;
@@ -250,9 +251,12 @@ namespace Lab03_WordGuessGame
                     char guess = Console.ReadKey().KeyChar;
                     if (guess != ' ')
                     {
+                        guesses += guess;
                         updatedGameWord = CheckIfCharInTheWord(guess, checkIfChar, randomWord);
                         checkIfChar = updatedGameWord;
                         stopLoop = CheckStringForUnderscores(checkIfChar);
+                        Console.WriteLine(Environment.NewLine);
+                        Console.WriteLine($"Letters Guessed: {string.Join(",", guesses.ToCharArray())}");
                     }
                     else
                     {
