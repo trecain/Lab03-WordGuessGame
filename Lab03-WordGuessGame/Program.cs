@@ -145,7 +145,7 @@ namespace Lab03_WordGuessGame
             string[] arrayOfStrings = new string[arrayOfChars.Length];
             for (int i = 0; i < arrayOfChars.Length; i++)
             {
-                arrayOfStrings[i] = "_ ";
+                arrayOfStrings[i] = "_";
             }
             return string.Join("", arrayOfStrings);
         }
@@ -155,7 +155,8 @@ namespace Lab03_WordGuessGame
         {
             char[] wordInChars = actualWord.ToCharArray();
             char[] progressInChars = progress.ToCharArray();
-            for (int i = 0; i < progressInChars.Length; i++)
+        
+            for (int i = 0; i < wordInChars.Length; i++)
             {
                 if (userGuess == wordInChars[i])
                 {
