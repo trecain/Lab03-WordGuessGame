@@ -88,6 +88,7 @@ namespace Lab03_WordGuessGame
             AdminMenuLogic(userInput, path);
         }
 
+
         public static void AddWordToBank(string path)
         {
             try
@@ -121,57 +122,73 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
+        public static string GrabRandomWordFromFile(string path)
+        {
+            try
+            {
+                Random random = new Random();
+                string[] wordsOnFile = File.ReadAllLines(path);
+                string randomlyChosenWord = wordsOnFile[random.Next(0, wordsOnFile.Length)];
+                return randomlyChosenWord;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
         public static string CreatesGameUI(string word)
         {
-            string displayProgress = "";
-            foreach (char c in word)
+            char[] arrayOfChars = word.ToCharArray();
+            string[] arrayOfStrings = new string[arrayOfChars.Length];
+            for (int i = 0; i < arrayOfChars.Length; i++)
             {
-                char appendCharProgress = '_';
-                displayProgress += $"{appendCharProgress} ";
+                arrayOfStrings[i] = "_ ";
             }
-            return displayProgress;
+            return string.Join("", arrayOfStrings);
         }
+
 
         public static string CheckIfCharInTheWord(char userGuess, string progress, string actualWord)
         {
             char[] wordInChars = actualWord.ToCharArray();
             char[] progressInChars = progress.ToCharArray();
-            char[] emptyChar = new char[progress.Length];
-            for (int i = 0; i < wordInChars.Length; i++)
+            for (int i = 0; i < progressInChars.Length; i++)
             {
                 if (userGuess == wordInChars[i])
                 {
-                    emptyChar[i] = wordInChars[i];
+                    progressInChars[i] = userGuess;
                 }
-                emptyChar[i] = '_';
             }
-            return String.Join(" ", emptyChar);
+            return string.Join("", progressInChars);
         }
+
 
         public static bool CheckStringForUnderscores(string word)
         {
             return word.Contains("_");
         }
 
-        public static string NewGame(string path)
+
+        public static void NewGame(string path)
         {
-            string[] allWordsInFile = File.ReadAllLines(path);
-            Random random = new Random();
-            string randomlyChosenWord = allWordsInFile[random.Next(0, allWordsInFile.Length)];
-            string wordInUnderscores = CreatesGameUI(randomlyChosenWord);
-            bool stopOrLoop = true;
-            string updatedWord;
-            while (stopOrLoop)
+            string randomWord = GrabRandomWordFromFile(path);
+            string checkIfChar = CreatesGameUI(randomWord);
+            bool stopLoop = true;
+            while (stopLoop)
             {
-                Console.WriteLine("Choose a letter");
-                Console.WriteLine(wordInUnderscores);
-                ConsoleKeyInfo userGuess = Console.ReadKey();
-                updatedWord = CheckIfCharInTheWord(userGuess.KeyChar, wordInUnderscores, randomlyChosenWord);
-                wordInUnderscores = updatedWord;
-                CheckStringForUnderscores(wordInUnderscores);
+                string updatedGameWord;
+                Console.WriteLine("Could you please select a number?");
+                Console.WriteLine(checkIfChar);
+                char guess = Console.ReadKey().KeyChar;
+                updatedGameWord = CheckIfCharInTheWord(guess, checkIfChar, randomWord);
+                checkIfChar = updatedGameWord;
+                stopLoop = CheckStringForUnderscores(checkIfChar);
             }
+            Console.WriteLine($"Success: you guessed {randomWord} correctly.");
             MainMenuUI(path);
-            return $"Congratulations, you guessed {randomlyChosenWord} correct!";
         }
 
 
@@ -256,7 +273,7 @@ namespace Lab03_WordGuessGame
                 switch (input)
                 {
                     case 1:
-                        Console.WriteLine(NewGame(path));
+                        NewGame(path);
                         break;
                     case 2:
                         AdminMenuUI(path);
