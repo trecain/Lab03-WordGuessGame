@@ -181,13 +181,15 @@ namespace Lab03_WordGuessGame
             while (stopLoop)
             {
                 string updatedGameWord;
-                Console.WriteLine("Could you please select a number?");
+                Console.WriteLine(Environment.NewLine);
+                Console.Write("Could you please select a letter? ");
                 Console.WriteLine(checkIfChar);
                 char guess = Console.ReadKey().KeyChar;
                 updatedGameWord = CheckIfCharInTheWord(guess, checkIfChar, randomWord);
                 checkIfChar = updatedGameWord;
                 stopLoop = CheckStringForUnderscores(checkIfChar);
             }
+            Console.WriteLine(Environment.NewLine);
             Console.WriteLine($"Success: you guessed {randomWord} correctly.");
             MainMenuUI(path);
         }
