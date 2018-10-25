@@ -1,4 +1,3 @@
-possum
 halloween
 vampire
 ghost

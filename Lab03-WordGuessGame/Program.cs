@@ -393,24 +393,21 @@ namespace Lab03_WordGuessGame
 
 
         //Deletes word from a file then recreates it.
-        public static void DeleteWordFromWordBank(string path)
+        public static void DeleteWordFromWordBank(string path, string word)
         {
            try
             {
-                Console.WriteLine("Word to delete from word bank.");
-                string wordToRemove = Console.ReadLine();
                 string[] currentWords = ReadFile(path);
                 using (StreamWriter sw = File.CreateText(path))
                 {
                     foreach (string line in currentWords)
                     {
-                        if (line != wordToRemove)
+                        if (line != word)
                         {
                             sw.WriteLine(line);
                         }
                     }
                 }
-                AdminMenuUI(path);
             }
             catch (Exception)
             {
@@ -464,7 +461,10 @@ namespace Lab03_WordGuessGame
                         ViewWordBankWords(path);
                         break;
                     case 3:
-                        DeleteWordFromWordBank(path);
+                        Console.WriteLine("Word to delete from word bank.");
+                        string wordToRemove = Console.ReadLine();
+                        DeleteWordFromWordBank(path, wordToRemove);
+                        AdminMenuUI(path);
                         break;
                     case 4:
                         DeleteWordBank(path);

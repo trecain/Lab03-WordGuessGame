@@ -20,6 +20,10 @@ namespace WordGuessGameTest
             Assert.Equal(5, words.Length);
         }
 
+
+        /// <summary>
+        /// Test that a word can be added
+        /// </summary>
         [Fact]
         public void TestThatAWordCanBeAdded()
         {
@@ -31,6 +35,9 @@ namespace WordGuessGameTest
         }
 
 
+        /// <summary>
+        /// Can update one word
+        /// </summary>
         [Fact]
         public void CanUpdateOneWord()
         {
@@ -38,6 +45,19 @@ namespace WordGuessGameTest
             Program.UpdateOneWord(wordBankFilePath, "possum", "eagle");
             string[] words = File.ReadAllLines(wordBankFilePath);
             Assert.Equal("eagle", words[0]);
+        }
+
+
+        /// <summary>
+        /// Test to see if the word can be deleted
+        /// </summary>
+        [Fact]
+        public void WordCanBeDeleted()
+        {
+            string wordBankFilePath = "../../../wordBankFile.txt";
+            Program.DeleteWordFromWordBank(wordBankFilePath, "possum");
+            string[] words = File.ReadAllLines(wordBankFilePath);
+            Assert.Equal(4, words.Length);
         }
 
 
@@ -56,6 +76,13 @@ namespace WordGuessGameTest
         }
 
 
+        /// <summary>
+        /// Test that the word chosen can accurately detect if the letter exist
+        /// </summary>
+        /// <param name="guess"></param>
+        /// <param name="progress"></param>
+        /// <param name="actualWord"></param>
+        /// <param name="expected"></param>
         [Theory]
         [InlineData('a', "_____", "apple", "a____")]
         [InlineData('b', "____", "baby", "b_b_")]
@@ -65,6 +92,11 @@ namespace WordGuessGameTest
             Assert.Equal(expected, Program.CheckIfCharInTheWord(guess, progress, actualWord));
         }
 
+
+        /// <summary>
+        /// Check to see if underscores are in the word, returns true
+        /// </summary>
+        /// <param name="word"></param>
         [Theory]
         [InlineData("_adds")]
         [InlineData("_____")]
@@ -74,6 +106,11 @@ namespace WordGuessGameTest
             Assert.True(Program.CheckStringForUnderscores(word));
         }
 
+
+        /// <summary>
+        /// Check to see if no underscores are in the word, returns false
+        /// </summary>
+        /// <param name="word"></param>
         [Theory]
         [InlineData("akdkdk")]
         [InlineData("applejuice")]
@@ -83,6 +120,10 @@ namespace WordGuessGameTest
             Assert.False(Program.CheckStringForUnderscores(word));
         }
 
+
+        /// <summary>
+        /// Test that a file can be read
+        /// </summary>
         [Fact]
         public void ReadFile()
         {
@@ -91,6 +132,10 @@ namespace WordGuessGameTest
             Assert.Equal(testArrString, Program.ReadFile(path));
         }
 
+
+        /// <summary>
+        /// Test that a random word can be grabbed
+        /// </summary>
         [Fact]
         public void GrabRandomWordFromFile()
         {
