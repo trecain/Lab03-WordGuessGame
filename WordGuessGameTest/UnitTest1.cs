@@ -7,6 +7,45 @@ namespace WordGuessGameTest
 {
     public class UnitTest1
     {
+        /// <summary>
+        /// Test that at file can be created
+        /// </summary>
+        [Fact]
+        public void TestThatAFileCanBeCreated()
+        {
+            string wordBankFilePath = "../../../wordBankFile.txt";
+            File.Delete(wordBankFilePath);
+            Program.OpenWordBank(wordBankFilePath);
+            string[] words = File.ReadAllLines(wordBankFilePath);
+            Assert.Equal(5, words.Length);
+        }
+
+        [Fact]
+        public void TestThatAWordCanBeAdded()
+        {
+            string wordBankFilePath = "../../../wordBankFile.txt";
+            string word = "tre";
+            Program.AddWordToBank(wordBankFilePath, word);
+            string[] words = File.ReadAllLines(wordBankFilePath);
+            Assert.Equal("tre", Program.AddWordToBank(wordBankFilePath, word));
+        }
+
+
+        [Fact]
+        public void CanUpdateOneWord()
+        {
+            string wordBankFilePath = "../../../wordBankFile.txt";
+            Program.UpdateOneWord(wordBankFilePath, "possum", "eagle");
+            string[] words = File.ReadAllLines(wordBankFilePath);
+            Assert.Equal("eagle", words[0]);
+        }
+
+
+        /// <summary>
+        /// Test that a game can be created
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="expected"></param>
         [Theory]
         [InlineData("cat", "___")]
         [InlineData("purple", "______")]
@@ -34,7 +73,6 @@ namespace WordGuessGameTest
         {
             Assert.True(Program.CheckStringForUnderscores(word));
         }
-
 
         [Theory]
         [InlineData("akdkdk")]

@@ -62,6 +62,7 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
         //Outputs the main menu items.
         public static void MainMenuUI(string path)
         {
@@ -81,6 +82,7 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
         //Outputs the admin menu items
         public static void AdminMenuUI(string path)
         {
@@ -93,7 +95,8 @@ namespace Lab03_WordGuessGame
                 Console.WriteLine("2 - View Words");
                 Console.WriteLine("3 - Delete Word");
                 Console.WriteLine("4 - Delete Word Bank");
-                Console.WriteLine("5 - Back To Main Menu");
+                Console.WriteLine("5 - Update Word");
+                Console.WriteLine("6 - Exit");
                 int userInput = Convert.ToInt32(Console.ReadLine());
                 AdminMenuLogic(userInput, path);
             }
@@ -103,21 +106,24 @@ namespace Lab03_WordGuessGame
             }
         }
 
+        public static string AskWordToBeAdded()
+        {
+            Console.WriteLine("What word would you like to add to the word bank?");
+            string wordToAdd = Console.ReadLine();
+            return wordToAdd;
+        }
 
         // uses stream writer to append new text to file path
-        public static void AddWordToBank(string path)
+        public static string AddWordToBank(string path, string word)
         {
             try
             {
                 using (StreamWriter sw = File.AppendText(path))
                 {
-                    Console.WriteLine("What word would you like to add to the word bank?");
-                    string wordToAdd = Console.ReadLine();
-                    sw.WriteLine(wordToAdd);
-                    Console.WriteLine($"Success: {wordToAdd} was added to the word bank.");
+                    sw.WriteLine(word);
+                    Console.WriteLine($"Success: {word} was added to the word bank.");
+                    return word;
                 }
-                Console.WriteLine("");
-                AdminMenuUI(path);
             }
             catch(Exception)
             {
@@ -157,6 +163,57 @@ namespace Lab03_WordGuessGame
             }
         }
 
+
+        public static void ReCreateAnswerFile(string path, string[] words)
+        {
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                try
+                {
+                    foreach (string word in words)
+                    {
+                        sw.WriteLine(word);
+                    }
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+        }
+
+
+        public static void UpdateOneWord(string path, string pastWord, string presentWord)
+        {
+            try
+            {
+                bool found = false;
+                string placeholderWord = "";
+                string[] words = File.ReadAllLines(path);
+                for (int i = 0; i < words.Length; i++)
+                {
+                    if (words[i] == pastWord)
+                    {
+                        words[i] = presentWord;
+                        placeholderWord = words[i];
+                        found = true;
+                    }
+                }
+                if (found)
+                {
+                    ReCreateAnswerFile(path, words);
+                    Console.WriteLine($"{placeholderWord} was added to the bank");
+                }
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
 
         //uses the type random to randomly grab the game word from file path
         public static string GrabRandomWordFromFile(string path)
@@ -292,7 +349,8 @@ namespace Lab03_WordGuessGame
                 }
                 else
                 {
-                    RenderMenus(path, "Your word bank does not exist! Would you like to create one? enter yes or no", AddWordToBank);
+                    Console.WriteLine("Your word bank does not exist! You will be redirected to add one.");
+                    AddWordToBank(path, AskWordToBeAdded());
                 }
             }
             catch (Exception)
@@ -400,7 +458,7 @@ namespace Lab03_WordGuessGame
                 switch (input)
                 {
                     case 1:
-                        AddWordToBank(path);
+                        AddWordToBank(path, AskWordToBeAdded());
                         break;
                     case 2:
                         ViewWordBankWords(path);
@@ -412,6 +470,14 @@ namespace Lab03_WordGuessGame
                         DeleteWordBank(path);
                         break;
                     case 5:
+                        Console.WriteLine("Please enter a word you would like to edit?");
+                        string oldWord = Console.ReadLine();
+                        Console.WriteLine("What would you like to replace it with?");
+                        string newWord = Console.ReadLine();
+                        UpdateOneWord(path, oldWord, newWord);
+                        AdminMenuUI(path);
+                        break;
+                    case 6:
                         MainMenuUI(path);
                         break;
                     default:
